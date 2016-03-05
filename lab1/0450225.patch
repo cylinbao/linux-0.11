@@ -1,0 +1,70 @@
+diff --exclude='*.swp' -Naur linux-0.11/include/linux/sched.h linux-0.11-lab1/include/linux/sched.h
+--- linux-0.11/include/linux/sched.h	2016-03-06 01:34:20.323686989 +0800
++++ linux-0.11-lab1/include/linux/sched.h	2016-03-06 01:27:26.266686993 +0800
+@@ -1,7 +1,9 @@
+ #ifndef _SCHED_H
+ #define _SCHED_H
+ 
+-#define NR_TASKS 0
++// OSDI Lab1, modify NR_TASKS number from 0 to 64, let it can support multi-task
++//#define NR_TASKS 0 
++#define NR_TASKS 64 
+ #define HZ 100
+ 
+ #define FIRST_TASK task[0]
+diff --exclude='*.swp' -Naur linux-0.11/init/main.c linux-0.11-lab1/init/main.c
+--- linux-0.11/init/main.c	2016-03-06 01:34:20.324686989 +0800
++++ linux-0.11-lab1/init/main.c	2016-03-06 01:26:12.079686991 +0800
+@@ -137,7 +137,8 @@
+ 	hd_init();
+ 	floppy_init();
+ 	sti();
+-	panic(""); 
++	// OSDI Lab1, delete the following function call pause() to keep running
++	//panic(""); 
+ 	move_to_user_mode();
+ 	if (!fork()) {		/* we count on this going ok */
+ 		init();
+@@ -201,6 +202,8 @@
+ 			(void) open("/dev/tty0",O_RDWR,0);
+ 			(void) dup(0);
+ 			(void) dup(0);
++			// OSDI Lab1, print my student ID before shell start
++			printf("Hello! This is student 0450225.\n");
+ 			_exit(execve("/bin/sh",argv,envp));
+ 		}
+ 		while (1)
+diff --exclude='*.swp' -Naur linux-0.11/Makefile linux-0.11-lab1/Makefile
+--- linux-0.11/Makefile	2016-03-06 01:34:20.313686991 +0800
++++ linux-0.11-lab1/Makefile	2016-03-04 15:27:59.871414129 +0800
+@@ -1,4 +1,4 @@
+-# indicate the Hardware Image file
++#f indicate the Hardware Image file
+ HDA_IMG = ../osdi_lab1.img
+ 
+ # indicate the path of the calltree
+@@ -34,11 +34,11 @@
+ LIBS	=lib/lib.a
+ 
+ .c.s:
+-@$(CC) $(CFLAGS) -S -o $*.s $<
++	@$(CC) $(CFLAGS) -S -o $*.s $<
+ .s.o:
+-@$(AS)  -o $*.o $<
++	@$(AS)  -o $*.o $<
+ .c.o:
+-@$(CC) $(CFLAGS) -c -o $*.o $<
++	@$(CC) $(CFLAGS) -c -o $*.o $<
+ 
+ all:	Image	
+ 
+@@ -141,6 +141,9 @@
+ debug:
+ 	@qemu -m 16M -boot a -fda Image -hda $(HDA_IMG) -s -S
+ 
++lab1:
++	@qemu-system-i386 -m 256M -boot a -fda Image -hda ../osdi_lab1.img -s -S \
++	-serial stdio
+ bochs-debug:
+ 	@$(BOCHS) -q -f tools/bochs/bochsrc/bochsrc-hd-dbg.bxrc	
+ 
