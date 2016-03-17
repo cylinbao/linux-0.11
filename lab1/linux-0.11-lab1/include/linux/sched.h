@@ -3,7 +3,7 @@
 
 // OSDI Lab1, modify NR_TASKS number from 0 to 64, let it can support multi-task
 //#define NR_TASKS 0 
-#define NR_TASKS 64 
+#define NR_TASKS 5 
 #define HZ 100
 
 #define FIRST_TASK task[0]
