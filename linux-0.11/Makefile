@@ -1,5 +1,5 @@
 # indicate the Hardware Image file
-HDA_IMG = ../osdi_lab1.img
+HDA_IMG = ../lab1/osdi_lab1.img
 
 # indicate the path of the calltree
 CALLTREE=$(shell find tools/ -name "calltree" -perm 755 -type f)
@@ -34,11 +34,11 @@ MATH	=kernel/math/math.a
 LIBS	=lib/lib.a
 
 .c.s:
-@$(CC) $(CFLAGS) -S -o $*.s $<
+	@$(CC) $(CFLAGS) -S -o $*.s $<
 .s.o:
-@$(AS)  -o $*.o $<
+	@$(AS)  -o $*.o $<
 .c.o:
-@$(CC) $(CFLAGS) -c -o $*.o $<
+	@$(CC) $(CFLAGS) -c -o $*.o $<
 
 all:	Image	
 
@@ -139,7 +139,7 @@ bochs-start:
 	@$(BOCHS) -q -f tools/bochs/bochsrc/bochsrc-hd.bxrc	
 
 debug:
-	@qemu -m 16M -boot a -fda Image -hda $(HDA_IMG) -s -S
+	@qemu -m 16M -boot a -fda Image -hda $(HDA_IMG) -s -S -serial stdio
 
 bochs-debug:
 	@$(BOCHS) -q -f tools/bochs/bochsrc/bochsrc-hd-dbg.bxrc	
